@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>BBZO Studio — Creative Production</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ─── RESET ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --black:   #080808;
+  --off:     #0f0f0f;
+  --white:   #f5f5f0;
+  --dim:     rgba(245,245,240,0.45);
+  --dimmer:  rgba(245,245,240,0.2);
+  --line:    rgba(245,245,240,0.1);
+  --line2:   rgba(245,245,240,0.06);
+  --gold:    #c8a96e;
+  --gold2:   #a8874e;
+  --fog:     rgba(200,169,110,0.06);
+  --font-head: "Bebas Neue", sans-serif;
+  --font-serif: "Instrument Serif", serif;
+  --font-body: "Manrope", sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── BASE ───────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Grain */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 9000;
+}
+
+/* Custom cursor */
+#cur {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s;
+}
+
+#cur-ring {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(200,169,110,0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.25s var(--ease), width 0.3s var(--ease), height 0.3s var(--ease), border-color 0.3s;
+}
+
+@media (max-width: 768px) {
+  #cur, #cur-ring { display: none; }
+}
+
+/* ─── NAV ────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  border-bottom: 1px solid var(--line2);
+  background: rgba(8,8,8,0.9);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.nav-wordmark {
+  font-family: var(--font-head);
+  font-size: 26px;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  text-decoration: none;
+}
+
+.nav-wordmark em {
+  color: var(--gold);
+  font-style: normal;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.nav-right a {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.nav-right a:hover { color: var(--white); }
+
+.nav-right a::after { display: none; }
+
+.nav-cta {
+  padding: 9px 22px;
+  border: 1px solid var(--gold2);
+  color: var(--gold) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.3s var(--ease) !important;
+}
+
+.nav-cta:hover {
+  background: var(--gold);
+  color: var(--black) !important;
+}
+
+@media (max-width: 640px) {
+  nav { padding: 0 20px; }
+  .nav-right { gap: 20px; }
+  .nav-right a:not(.nav-cta) { display: none; }
+}
+
+/* ─── LAYOUT ─────────────────────────────────────────────── */
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 640px) { .wrap { padding: 0 20px; } }
+
+/* ─── HERO ───────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-top: 68px;
+  padding-bottom: 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ticker tape top line */
+.hero-ticker-wrap {
+  position: absolute;
+  top: 68px;
+  left: 0; right: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background: rgba(200,169,110,0.03);
+}
+
+.hero-ticker {
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+  animation: ticker 22s linear infinite;
+}
+
+.hero-ticker span {
+  font-family: var(--font-head);
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  color: rgba(200,169,110,0.5);
+  padding: 0 32px;
+}
+
+.hero-ticker span::before {
+  content: "·";
+  margin-right: 32px;
+  color: rgba(200,169,110,0.25);
+}
+
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Large background text */
+.hero-bg-text {
+  position: absolute;
+  bottom: -20px;
+  left: -10px;
+  font-family: var(--font-head);
+  font-size: clamp(160px, 25vw, 320px);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: rgba(245,245,240,0.025);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: flex-end;
+  gap: 60px;
+}
+
+.hero-left { max-width: 700px; }
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.eyebrow-line {
+  width: 32px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.eyebrow-text {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.hero-h1 {
+  font-family: var(--font-head);
+  font-size: clamp(72px, 12vw, 148px);
+  letter-spacing: 0.02em;
+  line-height: 0.92;
+  color: var(--white);
+  margin-bottom: 32px;
+}
+
+.hero-h1 em {
+  font-style: italic;
+  font-family: var(--font-serif);
+  color: var(--gold);
+  letter-spacing: -0.01em;
+}
+
+.hero-desc {
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--dim);
+  max-width: 480px;
+  line-height: 1.7;
+}
+
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+  padding-bottom: 8px;
+}
+
+.hero-stat {
+  text-align: right;
+}
+
+.hero-stat-num {
+  font-family: var(--font-head);
+  font-size: 48px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: var(--white);
+}
+
+.hero-stat-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-top: 4px;
+}
+
+.hero-stat-divider {
+  width: 40px;
+  height: 1px;
+  background: var(--line);
+  margin-left: auto;
+}
+
+@media (max-width: 860px) {
+  .hero-content { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+}
+
+/* ─── SECTION SHARED ─────────────────────────────────────── */
+.section { padding: 120px 0; }
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 64px;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.section-h2 {
+  font-family: var(--font-head);
+  font-size: clamp(48px, 7vw, 80px);
+  letter-spacing: 0.03em;
+  line-height: 0.95;
+  color: var(--white);
+}
+
+.section-h2 em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--gold);
+}
+
+.section-note {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--dim);
+  max-width: 280px;
+  line-height: 1.7;
+  padding-top: 8px;
+}
+
+hr.rule {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 0;
+}
+
+/* ─── SERVICES ───────────────────────────────────────────── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-left: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+}
+
+.svc {
+  padding: 44px 36px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s var(--ease);
+}
+
+.svc::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 0; height: 2px;
+  background: var(--gold);
+  transition: width 0.4s var(--ease);
+}
+
+.svc:hover { background: var(--fog); }
+.svc:hover::after { width: 100%; }
+
+.svc-num {
+  font-family: var(--font-head);
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  color: var(--gold2);
+  margin-bottom: 20px;
+  display: block;
+}
+
+.svc h3 {
+  font-family: var(--font-head);
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  margin-bottom: 12px;
+  line-height: 1.1;
+}
+
+.svc p {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--dim);
+  line-height: 1.7;
+}
+
+@media (max-width: 860px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 520px) {
+  .services-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── LABEL / ROSTER ─────────────────────────────────────── */
+.label-section { padding: 120px 0; background: var(--off); }
+
+.label-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.label-text {}
+
+.label-text .section-label { margin-bottom: 16px; }
+
+.label-headline {
+  font-family: var(--font-head);
+  font-size: clamp(52px, 8vw, 100px);
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+  color: var(--white);
+  margin-bottom: 28px;
+}
+
+.label-headline em {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--gold);
+}
+
+.label-body {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--dim);
+  line-height: 1.8;
+  margin-bottom: 36px;
+}
+
+.label-artist {
+  border: 1px solid var(--line);
+  padding: 32px;
+  position: relative;
+  background: rgba(200,169,110,0.03);
+  transition: border-color 0.3s;
+}
+
+.label-artist:hover { border-color: var(--gold2); }
+
+.label-artist-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.label-artist-name {
+  font-family: var(--font-head);
+  font-size: 42px;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.label-artist-genre {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--dimmer);
+  letter-spacing: 0.08em;
+  margin-bottom: 24px;
+}
+
+.label-artist-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  transition: gap 0.3s var(--ease);
+}
+
+.label-artist-link::after { display: none !important; }
+
+.label-artist-link:hover { gap: 16px; }
+
+.label-artist-link .arrow {
+  font-size: 16px;
+  transition: transform 0.3s var(--ease);
+}
+
+.label-artist-link:hover .arrow { transform: translateX(4px); }
+
+@media (max-width: 860px) {
+  .label-inner { grid-template-columns: 1fr; gap: 48px; }
+}
+
+/* ─── CLIENTS ────────────────────────────────────────────── */
+.clients-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-left: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+}
+
+.client-item {
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 180px;
+  transition: background 0.4s var(--ease);
+}
+
+.client-item:hover { background: var(--fog); }
+
+.client-name {
+  font-family: var(--font-head);
+  font-size: 36px;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.client-scope {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-bottom: 20px;
+}
+
+.client-url {
+  font-size: 12px;
+  color: var(--gold);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.3s;
+}
+
+.client-url:hover { color: var(--white); }
+.client-url::after { display: none; }
+
+@media (max-width: 640px) {
+  .clients-list { grid-template-columns: 1fr; }
+}
+
+/* ─── CONTACT ────────────────────────────────────────────── */
+.contact-section { padding: 120px 0; }
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.contact-left {}
+
+.contact-big {
+  font-family: var(--font-head);
+  font-size: clamp(52px, 8vw, 96px);
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+  color: var(--white);
+  margin-bottom: 28px;
+}
+
+.contact-big em {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--gold);
+}
+
+.contact-body {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--dim);
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+
+.contact-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  color: var(--dimmer);
+}
+
+.contact-meta-dot {
+  width: 4px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+}
+
+.field input,
+.field textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  padding: 14px 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--white);
+  transition: border-color 0.3s;
+  outline: none;
+  resize: none;
+  width: 100%;
+}
+
+.field input::placeholder,
+.field textarea::placeholder { color: var(--dimmer); }
+
+.field input:focus,
+.field textarea:focus { border-color: var(--gold); }
+
+.submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 36px;
+  background: var(--gold);
+  color: var(--black);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+.submit-btn:hover {
+  background: #d4b87a;
+  gap: 20px;
+}
+
+@media (max-width: 860px) {
+  .contact-layout { grid-template-columns: 1fr; gap: 48px; }
+}
+
+/* ─── FOOTER ─────────────────────────────────────────────── */
+footer {
+  padding: 40px 0;
+  border-top: 1px solid var(--line);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-brand {
+  font-family: var(--font-head);
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  color: rgba(245,245,240,0.35);
+}
+
+.footer-brand em { color: var(--gold2); font-style: normal; }
+
+.footer-links {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+.footer-links a {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover { color: var(--white); }
+.footer-links a::after { display: none; }
+
+.footer-copy {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(245,245,240,0.2);
+  text-transform: uppercase;
+}
+
+/* ─── SCROLL REVEAL ──────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+}
+
+.reveal.show { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+</style>
+</head>
+
+<body>
+
+<!-- Custom cursor -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-wordmark">BB<em>ZO</em></a>
+  <div class="nav-right">
+    <a href="#services">Services</a>
+    <a href="#label">Label</a>
+    <a href="#contact" class="nav-cta">Start a Project</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+
+  <div class="hero-ticker-wrap">
+    <div class="hero-ticker">
+      <span>Web Design</span>
+      <span>Brand Visuals</span>
+      <span>Drone Production</span>
+      <span>Audio Engineering</span>
+      <span>Social Content</span>
+      <span>Ads &amp; Commercials</span>
+      <span>Music Label</span>
+      <span>Creative Direction</span>
+      <span>Web Design</span>
+      <span>Brand Visuals</span>
+      <span>Drone Production</span>
+      <span>Audio Engineering</span>
+      <span>Social Content</span>
+      <span>Ads &amp; Commercials</span>
+      <span>Music Label</span>
+      <span>Creative Direction</span>
+    </div>
+  </div>
+
+  <div class="hero-bg-text">BBZO</div>
+
+  <div class="wrap">
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="hero-eyebrow reveal">
+          <div class="eyebrow-line"></div>
+          <span class="eyebrow-text">Panama · Est. 2026</span>
+        </div>
+        <h1 class="hero-h1 reveal reveal-d1">
+          BBZO<br><em>Studio</em>
+        </h1>
+        <p class="hero-desc reveal reveal-d2">
+          Creative &amp; digital production studio. We build world-class websites, visuals, and campaigns — and we're the label home of Joaquin.
+        </p>
+      </div>
+      <div class="hero-right reveal reveal-d2">
+        <div class="hero-stat">
+          <div class="hero-stat-num">06</div>
+          <div class="hero-stat-label">Service lines</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">1</div>
+          <div class="hero-stat-label">Roof, all under it</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<hr class="rule">
+
+<!-- SERVICES -->
+<section class="section" id="services">
+  <div class="wrap">
+    <div class="section-header reveal">
+      <div>
+        <span class="section-label">What We Do</span>
+        <div class="section-h2">Our <em>Services</em></div>
+      </div>
+      <p class="section-note">One studio. Every medium. No need to juggle multiple vendors.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="svc reveal">
+        <span class="svc-num">01</span>
+        <h3>Web Design &amp; Dev</h3>
+        <p>Custom, fast, modern websites designed to convert and scale. From single pages to full platforms.</p>
+      </div>
+      <div class="svc reveal reveal-d1">
+        <span class="svc-num">02</span>
+        <h3>Brand Visuals &amp; Video</h3>
+        <p>Photography, video production, and creative assets built for digital platforms and print.</p>
+      </div>
+      <div class="svc reveal reveal-d2">
+        <span class="svc-num">03</span>
+        <h3>Drone Production</h3>
+        <p>Cinematic aerial visuals for events, properties, brands, and locations across Panama and beyond.</p>
+      </div>
+      <div class="svc reveal">
+        <span class="svc-num">04</span>
+        <h3>Audio &amp; Music Production</h3>
+        <p>Recording, engineering, mixing, and sound design — fully in-house at BBZO.</p>
+      </div>
+      <div class="svc reveal reveal-d1">
+        <span class="svc-num">05</span>
+        <h3>Social Content</h3>
+        <p>Short-form reels, clips, and platform-native content engineered for reach and retention.</p>
+      </div>
+      <div class="svc reveal reveal-d2">
+        <span class="svc-num">06</span>
+        <h3>Ads &amp; Commercials</h3>
+        <p>Creative direction and full production for campaigns, product launches, and brand moments.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- LABEL -->
+<section class="label-section" id="label">
+  <div class="wrap">
+    <div class="label-inner">
+      <div class="label-text reveal">
+        <span class="section-label">Music Division</span>
+        <div class="label-headline">The<br><em>Label</em></div>
+        <p class="label-body">
+          BBZO Studio is the publishing and rights home behind the music. Every track, remix, and release by our artists lives under this roof — professionally managed, properly owned.
+        </p>
+        <p class="label-body" style="margin-top: -16px;">
+          We handle masters, distribution coordination, sync licensing, and artist representation for our roster.
+        </p>
+      </div>
+      <div class="reveal reveal-d1">
+        <span class="section-label" style="margin-bottom: 24px;">Roster</span>
+        <div class="label-artist">
+          <span class="label-artist-eyebrow">Artist · Panama</span>
+          <div class="label-artist-name">JOAQUIN</div>
+          <div class="label-artist-genre">Afrobeats · Melodic House · Latin · World</div>
+          <a href="https://www.quincho.art" target="_blank" class="label-artist-link">
+            Visit Site <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- CLIENTS -->
+<section class="section" id="clients">
+  <div class="wrap">
+    <div class="section-header reveal">
+      <div>
+        <span class="section-label">Portfolio</span>
+        <div class="section-h2">Selected <em>Clients</em></div>
+      </div>
+    </div>
+    <div class="clients-list">
+      <div class="client-item reveal">
+        <div>
+          <div class="client-name">Joaquin</div>
+          <div class="client-scope">DJ &amp; Music Producer — Website</div>
+        </div>
+        <a href="https://www.quincho.art" target="_blank" class="client-url">www.quincho.art ↗</a>
+      </div>
+      <!-- More clients can be added here -->
+      <div class="client-item reveal reveal-d1" style="background: rgba(200,169,110,0.02);">
+        <div>
+          <div class="client-name" style="color: var(--dimmer); font-size: 24px;">Your Brand</div>
+          <div class="client-scope">Next project</div>
+        </div>
+        <a href="#contact" class="client-url">Start here →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="wrap">
+    <div class="contact-layout">
+      <div class="contact-left reveal">
+        <span class="section-label">Let's Build</span>
+        <div class="contact-big">Start a<br><em>Project</em></div>
+        <p class="contact-body">
+          Looking for a website, creative production, or a campaign that actually stands out? Tell us what you're building.
+        </p>
+        <div class="contact-meta">
+          <div class="contact-meta-item">
+            <div class="contact-meta-dot"></div>
+            bbzostudio@gmail.com
+          </div>
+          <div class="contact-meta-item">
+            <div class="contact-meta-dot"></div>
+            Instagram: @bbzostudio
+          </div>
+          <div class="contact-meta-item">
+            <div class="contact-meta-dot"></div>
+            Panama City, Panama
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-d1">
+        <form action="mailto:bbzostudio@gmail.com" method="POST" enctype="text/plain" class="contact-form">
+          <div class="field">
+            <label>Your Name</label>
+            <input type="text" name="name" placeholder="Full name" required>
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="you@company.com" required>
+          </div>
+          <div class="field">
+            <label>Project Details</label>
+            <textarea name="message" rows="5" placeholder="Tell us about your project..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            Send Inquiry →
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="footer-inner">
+      <span class="footer-brand">BB<em>ZO</em> Studio</span>
+      <div class="footer-links">
+        <a href="https://instagram.com/bbzostudio" target="_blank">Instagram</a>
+        <a href="mailto:bbzostudio@gmail.com">Email</a>
+      </div>
+      <span class="footer-copy">© 2026 BBZO Studio</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cur = document.getElementById('cur');
+  const ring = document.getElementById('cur-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cur.style.left = mx + 'px';
+    cur.style.top  = my + 'px';
+  });
+
+  // Smooth ring follow
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // Cursor expand on hover
+  document.querySelectorAll('a, button, .svc, .client-item, .label-artist').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.width = '60px';
+      ring.style.height = '60px';
+      ring.style.borderColor = 'rgba(200,169,110,0.7)';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+      ring.style.borderColor = 'rgba(200,169,110,0.4)';
+    });
+  });
+
+  // Scroll reveal
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+  }, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Smooth anchor scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+
+</body>
+</html>
