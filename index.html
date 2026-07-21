@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>BBZO Studio — Creative Production</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ─── RESET ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── DESIGN TOKENS ──────────────────────────────────────── */
+:root {
+  --bg:          #0a0e14;
+  --bg-light:    #141820;
+  --accent:      #ff8c42;
+  --accent-dark: #ff7624;
+  --text-primary: #ffffff;
+  --text-secondary: #b8bfc7;
+  --text-tertiary: #7a8290;
+  --border:      #1f2532;
+  --font-display: "Bricolage Grotesque", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── BASE ───────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Subtle grain overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.015;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.container {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 1;
+}
+
+section { padding: 110px 0; }
+
+/* ─── NAV ────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10, 14, 20, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-logo img {
+  height: 28px;
+  width: auto;
+}
+
+.nav-links {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.3s var(--ease);
+}
+
+.nav-links a:hover { 
+  color: var(--accent);
+}
+
+.nav-cta { 
+  color: var(--accent) !important; 
+}
+
+@media (max-width: 600px) {
+  nav { padding: 0 20px; }
+  .nav-links { gap: 20px; }
+  .nav-links li:nth-child(n+3) { display: none; }
+}
+
+/* ─── TYPOGRAPHY ─────────────────────────────────────────── */
+.display {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 8vw, 80px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  color: var(--text-primary);
+}
+
+.display em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 48px;
+  color: var(--text-primary);
+}
+
+h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+p {
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ─── BUTTONS ────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s var(--ease);
+  border: none;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.btn-primary:hover {
+  background: var(--accent-dark);
+  transform: translateY(-2px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* ─── DIVIDER ────────────────────────────────────────────── */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ─── 1. HERO ────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding-top: 120px;
+  padding-bottom: 80px;
+  position: relative;
+}
+
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 32px;
+}
+
+.hero-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.hero-tag-row .divider {
+  flex: 1;
+  max-width: 60px;
+}
+
+.hero-title {
+  margin-bottom: 32px;
+}
+
+.hero-subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.hero-contact {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.hero-img {
+  position: absolute;
+  top: 120px;
+  right: 0;
+  width: 340px;
+  height: 440px;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 4px;
+  filter: grayscale(25%) contrast(1.08) brightness(0.95);
+  opacity: 0.75;
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+}
+
+.hero-scroll {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-top: 60px;
+}
+
+.hero-scroll-line {
+  width: 40px;
+  height: 1px;
+  background: var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ─── 2. SERVICES ──────────────────────────────────────── */
+.services-section {
+  padding: 110px 0;
+}
+
+.section-header {
+  margin-bottom: 60px;
+}
+
+.section-header h2 {
+  margin-bottom: 0;
+}
+
+.section-header p {
+  margin-top: 16px;
+  max-width: 600px;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.service-card {
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-light);
+  transition: all 0.4s var(--ease);
+}
+
+.service-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+}
+
+.service-card h3 {
+  margin-bottom: 12px;
+}
+
+.service-card p {
+  margin: 0;
+}
+
+/* ─── 3. ABOUT ─────────────────────────────────────────── */
+.about-section {
+  padding: 110px 0;
+}
+
+.about-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.about-left h2 {
+  margin-bottom: 24px;
+}
+
+.about-left p {
+  margin-bottom: 16px;
+}
+
+.about-right {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 40px;
+  background: var(--bg-light);
+}
+
+.about-right h3 {
+  margin-bottom: 24px;
+}
+
+.roster-artist {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  margin-bottom: 16px;
+  transition: all 0.3s var(--ease);
+}
+
+.roster-artist:hover {
+  border-color: var(--accent);
+  background: rgba(255, 140, 66, 0.03);
+}
+
+.artist-eyebrow {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.artist-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
+
+.artist-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: none;
+  margin-top: 12px;
+  transition: all 0.3s var(--ease);
+}
+
+.artist-link:hover {
+  gap: 10px;
+}
+
+/* ─── 4. CLIENTS ───────────────────────────────────────── */
+.clients-section {
+  padding: 110px 0;
+}
+
+.clients-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.client-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-light);
+  transition: all 0.3s var(--ease);
+}
+
+.client-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.client-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.client-scope {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.client-url {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s var(--ease);
+}
+
+.client-url:hover {
+  gap: 6px;
+}
+
+/* ─── 5. CONTACT & FORM ────────────────────────────────── */
+.contact-section {
+  padding: 110px 0;
+}
+
+.contact-header {
+  margin-bottom: 60px;
+}
+
+.contact-header h2 {
+  margin-bottom: 0;
+}
+
+.form-wrapper {
+  max-width: 600px;
+  padding: 40px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-light);
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  transition: all 0.3s var(--ease);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(255, 140, 66, 0.02);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-message {
+  display: none;
+  padding: 12px 16px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.form-message.success {
+  background: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+}
+
+.form-message.error {
+  background: rgba(244, 67, 54, 0.1);
+  color: #f44336;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* ─── CONTACT INFO ─────────────────────────────────────── */
+.contact-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 60px;
+}
+
+.contact-info-item {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-light);
+}
+
+.info-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.info-value {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* ─── FOOTER ─────────────────────────────────────────────── */
+footer {
+  padding: 48px 0;
+  border-top: 1px solid var(--border);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+.footer-copy {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+/* ─── REVEAL ANIMATION ───────────────────────────────────── */
+.fade {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.fade.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-delay-1 { transition-delay: 0.1s; }
+.fade-delay-2 { transition-delay: 0.2s; }
+.fade-delay-3 { transition-delay: 0.3s; }
+.fade-delay-4 { transition-delay: 0.4s; }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .hero-img { display: none; }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .contact-info {
+    grid-template-columns: 1fr;
+  }
+
+  section { padding: 80px 0; }
+
+  .display { font-size: clamp(48px, 12vw, 72px); }
+}
+
+@media (max-width: 520px) {
+  .container { padding: 0 20px; }
+  
+  .hero-subtitle-row { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 16px; 
+  }
+
+  .nav-links {
+    gap: 20px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-info {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="logo.png" alt="BBZO">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact" class="nav-cta">Work With Us</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+
+  <!-- ── HERO ──────────────────────────────────────────── -->
+  <section class="hero">
+
+    <div class="hero-inner">
+      <div class="hero-tag-row fade">
+        <span class="label">Creative Studio</span>
+        <div class="divider"></div>
+        <span class="label" style="color: var(--text-tertiary);">Panama</span>
+      </div>
+
+      <div class="hero-title fade fade-delay-1">
+        <div class="display">BBZO Studio</div>
+      </div>
+
+      <div class="hero-scroll fade fade-delay-3">
+        <div class="hero-scroll-line"></div>
+        <span>Scroll to explore</span>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="divider fade"></div>
+
+  <!-- ── SERVICES ──────────────────────────────────────── -->
+  <section class="services-section" id="services">
+    <div class="section-header fade">
+      <h2>What We Do</h2>
+      <p>One studio. Every medium. Web, video, audio, design, and creative production all under one roof.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card fade">
+        <h3>Web Design &amp; Dev</h3>
+        <p>Custom, fast, modern websites designed to convert and scale. From single pages to full platforms.</p>
+      </div>
+      <div class="service-card fade fade-delay-1">
+        <h3>Brand Visuals &amp; Video</h3>
+        <p>Photography, video production, and creative assets built for digital platforms and print.</p>
+      </div>
+      <div class="service-card fade fade-delay-2">
+        <h3>Drone Production</h3>
+        <p>Cinematic aerial visuals for events, properties, brands, and locations across Panama.</p>
+      </div>
+      <div class="service-card fade">
+        <h3>Audio &amp; Music Production</h3>
+        <p>Recording, engineering, mixing, and sound design — fully in-house at BBZO.</p>
+      </div>
+      <div class="service-card fade fade-delay-1">
+        <h3>Social Content</h3>
+        <p>Short-form reels, clips, and platform-native content engineered for reach and retention.</p>
+      </div>
+      <div class="service-card fade fade-delay-2">
+        <h3>Ads &amp; Commercials</h3>
+        <p>Creative direction and full production for campaigns, product launches, and brand moments.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider fade"></div>
+
+  <!-- ── ABOUT ─────────────────────────────────────────── -->
+  <section class="about-section" id="about">
+    <div class="about-inner">
+      <div class="fade">
+        <h2>The Label</h2>
+        <p>BBZO is a music label in Panama City. Every track, remix, and release by our roster artists is professionally managed under our roof — masters, distribution, sync licensing, and artist development.</p>
+      </div>
+      <div class="about-right fade fade-delay-1">
+        <h3>Contact</h3>
+        <div class="roster-artist">
+          <div class="artist-eyebrow">Email</div>
+          <div class="artist-name" style="font-size: 16px;">bsentholdings@gmail.com</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider fade"></div>
+
+  <!-- ── CLIENTS ────────────────────────────────────────── -->
+  <section class="clients-section" id="clients">
+    <div class="section-header fade">
+      <h2>Selected Clients</h2>
+    </div>
+    <div class="clients-list">
+      <div class="client-item fade">
+        <div>
+          <div class="client-name">Geneva Asset Management</div>
+          <div class="client-scope">Fund Tracker Platform</div>
+        </div>
+        <a href="https://www.genafunds.com" target="_blank" class="client-url">www.genafunds.com ↗</a>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider fade"></div>
+
+  <!-- ── CONTACT ────────────────────────────────────────── -->
+  <section class="contact-section" id="contact">
+    <div class="contact-header fade">
+      <h2>Start a Project</h2>
+      <p>Looking for a website, creative production, or a campaign that stands out? Tell us what you're building.</p>
+    </div>
+
+    <div class="form-wrapper fade fade-delay-1">
+      <div class="form-message" id="formMessage"></div>
+      <form id="contactForm">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" placeholder="Full name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@company.com" required>
+        </div>
+        <div class="form-group">
+          <label for="subject">Project Type</label>
+          <input type="text" id="subject" name="subject" placeholder="e.g., Website, Video, Branding" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Project Details</label>
+          <textarea id="message" name="message" placeholder="Tell us about your project..." required></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Send Inquiry</button>
+          <button type="reset" class="btn btn-ghost">Clear</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="contact-info fade fade-delay-2">
+      <div class="contact-info-item">
+        <div class="info-label">Email</div>
+        <div class="info-value">bsentholdings@gmail.com</div>
+      </div>
+      <div class="contact-info-item">
+        <div class="info-label">Instagram</div>
+        <div class="info-value">@bbzostudio</div>
+      </div>
+      <div class="contact-info-item">
+        <div class="info-label">Location</div>
+        <div class="info-value">Panama City, Panama</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ────────────────────────────────────────── -->
+  <footer class="fade fade-delay-3">
+    <div class="footer-inner">
+      <span class="footer-name">BBZO Studio</span>
+      <span class="footer-copy">&copy; 2026 &nbsp;·&nbsp; Creative Production &nbsp;·&nbsp; Panama</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Scroll reveal
+  const fades = document.querySelectorAll(".fade");
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("show"); });
+  }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
+  fades.forEach(f => io.observe(f));
+
+  // Anchor scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener("click", e => {
+      const t = document.querySelector(a.getAttribute("href"));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: "smooth" }); }
+    });
+  });
+
+  // Form handler
+  const contactForm = document.getElementById('contactForm');
+  const formMessage = document.getElementById('formMessage');
+
+  contactForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(contactForm);
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      subject: formData.get('subject'),
+      message: formData.get('message')
+    };
+
+    try {
+      // Using Formspree for email handling
+      const response = await fetch('https://formspree.io/f/xqaevgyp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          subject: data.subject,
+          message: data.message,
+          _reply_to: data.email
+        })
+      });
+
+      if (response.ok) {
+        formMessage.textContent = '✓ Inquiry sent! We\'ll get back to you soon.';
+        formMessage.classList.add('success');
+        formMessage.classList.remove('error');
+        formMessage.style.display = 'block';
+        contactForm.reset();
+        setTimeout(() => {
+          formMessage.style.display = 'none';
+        }, 5000);
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      formMessage.textContent = '✗ Something went wrong. Please email directly.';
+      formMessage.classList.add('error');
+      formMessage.classList.remove('success');
+      formMessage.style.display = 'block';
+    }
+  });
+</script>
+
+</body>
+</html>
